@@ -3,7 +3,7 @@ const bots = require("./src/botsData");
 const shuffle = require("./src/shuffle");
 // require path for utilities for working with files and directories path.
 const path = require('path');
-const Rollbar = require('rollbar');
+const rollbar = require('rollbar');
 const cors = require('cors');
 
 const playerRecord = {
@@ -48,11 +48,11 @@ const calculateHealthAfterAttack = ({ playerDuo, compDuo }) => {
 
 app.get("/api/robots", (req, res) => {
   try {
-    Rollbar.log('retrived all bots')
+    rollbar.log('retrived all bots')
     res.status(200).send(bots);
   } catch (error) {
     console.error("ERROR GETTING BOTS", error);
-    Rollbar.error(error)
+    rollbar.error(error)
     res.sendStatus(400);
   }
 });
@@ -60,11 +60,11 @@ app.get("/api/robots", (req, res) => {
 app.get("/api/robots/shuffled", (req, res) => {
   try {
     let shuffled = shuffle(bots);
-    Rollbar.info('Returned user choices and computer choices', shuffled)
+    rollbar.info('Returned user choices and computer choices', shuffled)
     res.status(200).send(shuffled);
   } catch (error) {
     console.error("ERROR GETTING SHUFFLED BOTS", error);
-    Rollbar.critical('Error getting shuffles bots')
+    rollbar.critical('Error getting shuffles bots')
     res.sendStatus(400);
   }
 });
@@ -81,15 +81,15 @@ app.post("/api/duel", (req, res) => {
     // comparing the total health to determine a winner
     if (compHealth > playerHealth) {
       playerRecord.losses += 1;
-      Rollbar.warning('You lost!')
+      rollbar.warning('You lost!')
       res.status(200).send("You lost!");
     } else {
       playerRecord.losses += 1;
-      Rollbar.info('You won!')
+      rollbar.info('You won!')
       res.status(200).send("You won!");
     }
   } catch (error) {
-    Rollbar.error(error)
+    rollbar.error(error)
     console.log("ERROR DUELING", error);
     res.sendStatus(400);
   }
@@ -97,11 +97,11 @@ app.post("/api/duel", (req, res) => {
 
 app.get("/api/player", (req, res) => {
   try {
-    Rollbar.log(playerRecord)
+    rollbar.log(playerRecord)
     res.status(200).send(playerRecord);
   } catch (error) {
     console.log("ERROR GETTING PLAYER STATS", error);
-    Rollbar.warning('Error getting player stats');
+    rollbar.warning('Error getting player stats');
     res.sendStatus(400);
   }
 });
